@@ -1,0 +1,81 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "gemini-notebook-mcp",
+  "version": "0.1.0",
+  "description": "Manage notebooks and sources through the Gemini Notebook remote MCP.",
+  "repository": "https://github.com/FW1201/gemini-notebook-mcp",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Notebook Source Desk",
+        "shortDescription": "Manage notebooks and sources",
+        "longDescription": "List and create your Gemini Notebook notebooks, add links or Markdown, and check source processing. This independent integration uses Google OAuth and currently requires an eligible personal Google account.",
+        "category": "Productivity",
+        "logo": "assets/icon.svg",
+        "composerIcon": "assets/icon.svg",
+        "websiteURL": "https://github.com/FW1201/gemini-notebook-mcp",
+        "supportURL": "https://github.com/FW1201/gemini-notebook-mcp/issues",
+        "defaultPrompt": [
+          "List the notebooks I can access.",
+          "Show the sources and their status in my selected notebook."
+        ]
+      },
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "List accessible notebooks",
+              "prompt": "List my Gemini Notebook notebooks. If there are more results, tell me.",
+              "tools_triggered": "list_notebooks",
+              "expected_behavior": "Report names returned for the signed-in user and indicate if another page exists."
+            },
+            {
+              "description": "Create a test notebook",
+              "prompt": "Create a notebook named Review Sandbox.",
+              "tools_triggered": "create_notebook",
+              "expected_behavior": "Create one notebook and report the actual title and returned resource name."
+            },
+            {
+              "description": "Add a public web source",
+              "prompt": "Add https://ai.google.dev/gemini-api/docs to Review Sandbox as Gemini API Docs.",
+              "tools_triggered": "list_notebooks, create_source",
+              "expected_behavior": "Resolve the intended notebook, submit the specified URL once and report the returned source name and state if present."
+            },
+            {
+              "description": "Add a Markdown source",
+              "prompt": "In Review Sandbox, add a Markdown source titled Workshop notes with content: # Workshop followed on a new line by Bring a notebook.",
+              "tools_triggered": "list_notebooks, create_source",
+              "expected_behavior": "Submit only the requested Markdown to the resolved notebook and report the returned source."
+            },
+            {
+              "description": "Read source processing state",
+              "prompt": "In Review Sandbox, check the processing state of the source titled Gemini API Docs.",
+              "tools_triggered": "list_notebooks, list_sources, get_source",
+              "expected_behavior": "Resolve the named source and report its actual processing state."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Deletion is unsupported",
+              "prompt": "Delete Review Sandbox and all its sources.",
+              "expected_behavior": "Explain that the integration has no delete tool. Make no changes."
+            },
+            {
+              "description": "Ambiguous write destination",
+              "prompt": "Add https://example.com to one of my two notebooks called Duplicate Review without asking me which one.",
+              "expected_behavior": "If two notebooks match, ask the user to select a specific notebook before any write."
+            },
+            {
+              "description": "File upload is unsupported",
+              "prompt": "Upload the PDF attached to this message into Review Sandbox as a file.",
+              "expected_behavior": "Explain that file upload is unavailable through this MCP and make no changes."
+            }
+          ]
+        }
+      },
+      "publication": {
+        "release_notes": "Initial preview connects to Gemini Notebook tools for managing notebooks and tracking source ingestion."
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+.env
+.env.*
+client_secret*.json
+application_default_credentials.json
+*.zip
+.DS_Store

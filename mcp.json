@@ -1,0 +1,19 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "gemini-notebook": {
+      "type": "streamable-http",
+      "url": "https://notebook.googleapis.com/mcp",
+      "extensions": {
+        "com.openai": {
+          "auth": {
+            "type": "oauth",
+            "authorizationUrl": "https://accounts.google.com/o/oauth2/v2/auth",
+            "tokenUrl": "https://oauth2.googleapis.com/token",
+            "defaultScopes": ["https://www.googleapis.com/auth/notebook"]
+          }
+        }
+      }
+    }
+  }
+}
